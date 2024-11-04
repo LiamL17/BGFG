@@ -48,3 +48,16 @@ allOpen {
 tasks.withType<Test> {
 	useJUnitPlatform()
 }
+
+//tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+//	dependsOn(tasks.withType<JavaCompile>())
+//}
+
+sourceSets {
+	val main by getting {
+		java.srcDirs("src/main/java", "src/main/kotlin")
+	}
+	val test by getting {
+		java.srcDirs("src/test/java", "src/test/kotlin")
+	}
+}

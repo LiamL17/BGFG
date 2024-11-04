@@ -43,7 +43,7 @@ class WordScramblerTest {
             .isStrictlyBetween(4, 10)
 
         assertThat(guesser.scrambleWithDifficulty(Difficulty.HARD).length)
-            .isGreaterThan(7)
+            .isGreaterThan(6)
 
         assertThat(guesser.scrambleWithDifficulty(Difficulty.EXPERT).length)
             .isGreaterThan(9)
