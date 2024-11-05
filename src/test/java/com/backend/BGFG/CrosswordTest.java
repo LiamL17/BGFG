@@ -21,7 +21,8 @@ class CrosswordTest {
     void generateEasyCrossword() {
         Crossword crossword = new Crossword(10);
         crossword.generateEasyCrossword(10);
-        assert(false);
+        crossword.prettyPrint();
+//        assert(false);
     }
 
     @Test

@@ -1,6 +1,10 @@
 package com.backend.BGFG;
 
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -8,9 +12,11 @@ import java.util.stream.IntStream;
 public class Crossword {
 
     public String[][] crossword;
+    public boolean[][] crosswordPlaced;
 
     public Crossword(int size) {
         crossword = new String[size][size];
+        crosswordPlaced = new boolean[size][size];
     }
 
     public void generateCrossword(Difficulty difficulty) {
@@ -43,7 +49,19 @@ public class Crossword {
     public void generateEasyCrossword(int size) {
         this.crossword = initializeGrid(size);
         List<String> words = getWords(new Words().getWords(), 5, 10);
-        String a = "a";
+        Map<String, WordDirection> wordDirectionMap = new HashMap<>();
+
+        List<WordDirection> easyDirections = new ArrayList<>(EnumSet.complementOf(EnumSet.of(WordDirection.Diagonal)));
+        Random random = new Random();
+
+        for (String word : words) {
+            WordDirection randomDirection = easyDirections.get(random.nextInt(easyDirections.size()));
+            wordDirectionMap.put(word, randomDirection);
+        }
+
+
+
+        String b = "a";
     }
 
     public List<String> getWords(List<String> words, int length, int count) {
@@ -56,5 +74,24 @@ public class Crossword {
                 .limit(count)
                 .mapToObj(filtered::get)
                 .collect(Collectors.toList());
+    }
+
+    public void prettyPrint() {
+        StringBuilder horizontal = new StringBuilder();
+        StringBuilder spacer = new StringBuilder();
+        horizontal.repeat(" ", 4);
+        for (int i = 0; i < crossword.length; ++i) {
+            horizontal.append((char) ('A' + i)).append(" ");
+        }
+        System.out.println(horizontal);
+        System.out.println(spacer.repeat("_ ", crossword.length + 2));
+
+        for (int i = 0; i < crossword.length; ++i) {
+            System.out.print((i + 1) + String.valueOf(new StringBuilder().repeat(" ", crossword.length / 10 + 1)) + "| ");
+            for (String item : crossword[i]) {
+                System.out.print(item + " ");
+            }
+            System.out.println();
+        }
     }
 }
