@@ -2,6 +2,9 @@ package com.backend.BGFG;
 
 public enum WordDirection {
     Vertical,
+    VerticalReverse,
     Horizontal,
-    Diagonal
+    HorizontalReverse,
+    Diagonal,
+    DiagonalReverse
 }
