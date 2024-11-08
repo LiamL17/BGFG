@@ -13,55 +13,180 @@ public class Crossword {
 
     public String[][] crossword;
     public boolean[][] crosswordPlaced;
+    public int size;
 
-    public Crossword(int size) {
-        crossword = new String[size][size];
-        crosswordPlaced = new boolean[size][size];
+    public boolean debug;
+
+    private int MAX_LENGTH_OF_WORD;
+    private int WORDS_COUNT;
+
+    public Crossword() {}
+
+    public Crossword(boolean debug) {
+        this.debug = debug;
     }
 
     public void generateCrossword(Difficulty difficulty) {
         switch (difficulty) {
-            case EASY -> generateCrosswordWithSize(10); // Left to right, top to bottom
-            case MEDIUM -> generateCrosswordWithSize(14); // Vertical, horizontal
-            case HARD -> generateCrosswordWithSize(16); // Diagonals
-            case EXPERT -> generateCrosswordWithSize(20); // Reverse diagonal
+            case EASY -> {
+                this.MAX_LENGTH_OF_WORD = 5;
+                this.WORDS_COUNT = 10;
+                generateEasyCrossword(10); // Left to right, top to bottom
+            }
+            case MEDIUM -> {
+                this.MAX_LENGTH_OF_WORD = 7;
+                this.WORDS_COUNT = 12;
+                generateMediumCrossword(14); // Vertical, horizontal
+            }
+            case HARD -> {
+                this.MAX_LENGTH_OF_WORD = 10;
+                this.WORDS_COUNT = 14;
+                generateHardCrossword(16); // Diagonals
+            }
+            case EXPERT -> {
+                this.MAX_LENGTH_OF_WORD = 15;
+                this.WORDS_COUNT = 16;
+                generateExpertCrossword(20); // Reverse diagonal
+            }
         }
     }
 
-    public String[][] initializeGrid(int size) {
-        String[][] grid = new String[size][size];
+    public void initializeGrid(int size) {
+        this.crossword = new String[size][size];
+        this.crosswordPlaced = new boolean[size][size];
         for (int i = 0; i < size; ++i) {
             for (int j = 0; j < size; ++j) {
                 Random r = new Random();
-                grid[i][j] = String.valueOf((char) (r.nextInt(26) + 'A'));
+                this.crossword[i][j] = String.valueOf((char) (r.nextInt(26) + 'A'));
+                this.crosswordPlaced[i][j] = false;
             }
         }
-        return grid;
-    }
-
-    public void generateCrosswordWithSize(int size) {
-       this.crossword = initializeGrid(size);
     }
 
     /*
      * Allow vertical and horizontal with left to right and top to bottom.
      */
-    public void generateEasyCrossword(int size) {
-        this.crossword = initializeGrid(size);
-        List<String> words = getWords(new Words().getWords(), 5, 10);
-        Map<String, WordDirection> wordDirectionMap = new HashMap<>();
+    private void generateEasyCrossword(int size) {
+        this.size = size;
+        initializeGrid(size);
+        List<String> words = getWords(new Words().getWords(), MAX_LENGTH_OF_WORD, WORDS_COUNT);
+        List<WordDirection> directions = new ArrayList<>(EnumSet.complementOf(EnumSet.of(WordDirection.Diagonal)));
+        placeWords(words, directions);
+    }
 
-        List<WordDirection> easyDirections = new ArrayList<>(EnumSet.complementOf(EnumSet.of(WordDirection.Diagonal)));
+    /*
+     * Allow vertical and horizontal with left to right and top to bottom.
+     */
+    private void generateMediumCrossword(int size) {
+        this.size = size;
+        initializeGrid(size);
+        List<String> words = getWords(new Words().getWords(), MAX_LENGTH_OF_WORD, WORDS_COUNT);
+        List<WordDirection> directions = new ArrayList<>(EnumSet.complementOf(EnumSet.of(WordDirection.Diagonal)));
+        placeWords(words, directions);
+    }
+
+    /*
+     * Allow vertical and horizontal with left to right and top to bottom.
+     */
+    private void generateHardCrossword(int size) {
+        this.size = size;
+        initializeGrid(size);
+        List<String> words = getWords(new Words().getWords(), MAX_LENGTH_OF_WORD, WORDS_COUNT);
+        // TODO: Finish diagonal here. This is a copy of easy currently.
+        List<WordDirection> directions = new ArrayList<>(EnumSet.complementOf(EnumSet.of(WordDirection.Diagonal)));
+        placeWords(words, directions);
+    }
+
+    /*
+     * Allow vertical and horizontal with left to right and top to bottom.
+     */
+    private void generateExpertCrossword(int size) {
+        this.size = size;
+        initializeGrid(size);
+        List<String> words = getWords(new Words().getWords(), MAX_LENGTH_OF_WORD, WORDS_COUNT);
+        // TODO: Finish diagonal here. This is a copy of easy currently.
+        List<WordDirection> directions = new ArrayList<>(EnumSet.complementOf(EnumSet.of(WordDirection.Diagonal)));
+        placeWords(words, directions);
+    }
+
+    public void placeWords(List<String> words, List<WordDirection> directions) {
         Random random = new Random();
-
         for (String word : words) {
-            WordDirection randomDirection = easyDirections.get(random.nextInt(easyDirections.size()));
-            wordDirectionMap.put(word, randomDirection);
+            WordDirection direction = directions.get(random.nextInt(directions.size()));
+            boolean isValid = false;
+            while (!isValid) {
+                switch (direction) {
+                    case Vertical -> {
+                        // Select the col
+                        int col = random.nextInt(0, this.size);
+                        int row = random.nextInt(0, this.size - word.length());
+                        if (canPlaceVertical(row, col, word.length())) {
+                            placeWordVertical(word, row, col);
+                            isValid = true;
+                        }
+                    }
+                    case Horizontal -> {
+                        // Select the row
+                        int row = random.nextInt(0, this.size);
+                        int col = random.nextInt(0, this.size - word.length());
+                        if (canPlaceHorizontal(row, col, word.length())) {
+                            placeWordHorizontal(word, row, col);
+                            isValid = true;
+                        }
+                    }
+                    case Diagonal -> {
+                        isValid = true;
+                    }
+                }
+            }
         }
 
 
-
         String b = "a";
+    }
+
+    public void placeWordHorizontal(String word, int row, int col) {
+        for (int i = 0; i < word.length(); ++i) {
+            String character = String.valueOf(word.charAt(i)).toUpperCase();
+            if (debug) {
+                this.crossword[row][col + i] = ANSIColor.ANSI_GREEN + character + ANSIColor.ANSI_RESET;
+            } else {
+                this.crossword[row][col + i] = character;
+            }
+            this.crosswordPlaced[row][col + i] = true;
+        }
+    }
+
+    public void placeWordVertical(String word, int row, int col) {
+        for (int i = 0; i < word.length(); ++i) {
+            String character = String.valueOf(word.charAt(i)).toUpperCase();
+            if (debug) {
+                this.crossword[row + i][col] = ANSIColor.ANSI_GREEN + character + ANSIColor.ANSI_RESET;
+            } else {
+                this.crossword[row + i][col] = character;
+            }
+            this.crosswordPlaced[row + i][col] = true;
+        }
+    }
+
+    private boolean canPlaceHorizontal(int row, int col, int wordLength) {
+       for (int i = col; i < col + wordLength; ++i) {
+           if (this.crosswordPlaced[row][i]) {
+               return false;
+           }
+       }
+
+       return true;
+    }
+
+    private boolean canPlaceVertical(int row, int col, int wordLength) {
+        for (int i = row; i < row + wordLength; ++i) {
+            if (this.crosswordPlaced[i][col]) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public List<String> getWords(List<String> words, int length, int count) {
@@ -76,19 +201,35 @@ public class Crossword {
                 .collect(Collectors.toList());
     }
 
-    public void prettyPrint() {
+    public void prettyPrintCrossword() {
         StringBuilder horizontal = new StringBuilder();
-        StringBuilder spacer = new StringBuilder();
-        horizontal.repeat(" ", 4);
+        horizontal.append(" ".repeat(5));
         for (int i = 0; i < crossword.length; ++i) {
             horizontal.append((char) ('A' + i)).append(" ");
         }
         System.out.println(horizontal);
-        System.out.println(spacer.repeat("_ ", crossword.length + 2));
+        System.out.println(" ".repeat(5) + "_ ".repeat(crossword.length));
 
         for (int i = 0; i < crossword.length; ++i) {
-            System.out.print((i + 1) + String.valueOf(new StringBuilder().repeat(" ", crossword.length / 10 + 1)) + "| ");
+            System.out.print((i + 1) + " ".repeat(2 - ((i + 1) / 10)) + "| ");
             for (String item : crossword[i]) {
+                System.out.print(item + " ");
+            }
+            System.out.println();
+        }
+    }
+    public void prettyPrintCrosswordPlaced() {
+        StringBuilder horizontal = new StringBuilder();
+        horizontal.append(" ".repeat(5));
+        for (int i = 0; i < crosswordPlaced.length; ++i) {
+            horizontal.append((char) ('A' + i)).append(" ");
+        }
+        System.out.println(horizontal);
+        System.out.println(" ".repeat(5) + "_ ".repeat(crosswordPlaced.length));
+
+        for (int i = 0; i < crosswordPlaced.length; ++i) {
+            System.out.print((i + 1) + " ".repeat(2 - ((i + 1) / 10)) + "| ");
+            for (boolean item : crosswordPlaced[i]) {
                 System.out.print(item + " ");
             }
             System.out.println();

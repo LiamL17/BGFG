@@ -19,9 +19,10 @@ class CrosswordTest {
 
     @Test
     void generateEasyCrossword() {
-        Crossword crossword = new Crossword(10);
-        crossword.generateEasyCrossword(10);
-        crossword.prettyPrint();
+        Crossword crossword = new Crossword(true);
+        crossword.generateCrossword(Difficulty.MEDIUM);
+        crossword.prettyPrintCrossword();
+        String a = "";
 //        assert(false);
     }
 
