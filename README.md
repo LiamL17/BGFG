@@ -29,6 +29,6 @@ This mode also extends on the hard difficulty by adding reverse diagonals.
 
 #### Todo
 - Document functions
-- Diagonals
+- ~~Diagonals~~
 - Finish Readme
 - Move Todos to issues
