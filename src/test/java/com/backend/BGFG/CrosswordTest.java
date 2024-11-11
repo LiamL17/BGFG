@@ -20,7 +20,7 @@ class CrosswordTest {
     @Test
     void generateEasyCrossword() {
         Crossword crossword = new Crossword(true);
-        crossword.generateCrossword(Difficulty.MEDIUM);
+        crossword.generateCrossword(Difficulty.HARD);
         crossword.prettyPrintCrossword();
         String a = "";
 //        assert(false);

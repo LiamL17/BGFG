@@ -140,7 +140,12 @@ public class Crossword {
                         }
                     }
                     case Diagonal, DiagonalReverse -> {
-                        isValid = true;
+                        int row = random.nextInt(0, this.size - word.length());
+                        int col = random.nextInt(0, this.size - word.length());
+                        if (canPlaceDiagonal(row, col, word.length())) {
+                            placeWordDiagonal(word, row, col);
+                            isValid = true;
+                        }
                     }
                 }
             }
@@ -174,6 +179,18 @@ public class Crossword {
         }
     }
 
+    public void placeWordDiagonal(String word, int row, int col) {
+        for (int i = 0; i < word.length(); ++i) {
+            String character = String.valueOf(word.charAt(i)).toUpperCase();
+            if (debug) {
+                this.crossword[row + i][col + i] = ANSIColor.ANSI_GREEN + character + ANSIColor.ANSI_RESET;
+            } else {
+                this.crossword[row + i][col + i] = character;
+            }
+            this.crosswordPlaced[row + i][col + i] = true;
+        }
+    }
+
     private boolean canPlaceHorizontal(int row, int col, int wordLength) {
         for (int i = col; i < col + wordLength; ++i) {
             if (this.crosswordPlaced[row][i]) {
@@ -187,6 +204,16 @@ public class Crossword {
     private boolean canPlaceVertical(int row, int col, int wordLength) {
         for (int i = row; i < row + wordLength; ++i) {
             if (this.crosswordPlaced[i][col]) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private boolean canPlaceDiagonal(int row, int col, int wordLength) {
+        for (int i = row, j = col; i < row + wordLength; ++i, ++j) {
+            if (this.crosswordPlaced[i][j]) {
                 return false;
             }
         }
