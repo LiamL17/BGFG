@@ -8,10 +8,10 @@ assignees: ''
 ---
 
 ## What
-**What will this feature do?**
+*What will this feature do?*
 
 ## Why
-**Why is this needed?**
+*Why is this needed?*
 
 ## Definition of done
-**What is needed for it to be considered done?**
+*What is needed for it to be considered done?*
