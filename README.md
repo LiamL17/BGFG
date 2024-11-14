@@ -3,10 +3,10 @@ Bible games for all is a mobile application designed to teach the Bible through
 basic games.
 
 ## Games
-### Crossword
+### Word Search
 
 #### Easy
-This is the most basic version of the crossword. It consists of a 10x10 grid 
+This is the most basic version of the wordSearch. It consists of a 10x10 grid 
 and 10 words. Each word it has a maximum length of 5 characters. Words are 
 horizontal or vertical in reading order.
 
