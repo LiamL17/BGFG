@@ -8,7 +8,8 @@ class WordSearchTest {
     void generateEasyWordSearch() {
         WordSearch wordSearch = new WordSearch(true);
         wordSearch.generateWordSearch(Difficulty.HARD);
-        wordSearch.prettyPrintCrossword();
+//        wordSearch.prettyPrintWordSearch();
+        wordSearch.prettyPrintWordSearchPlaced();
         String a = "";
 //        assert(false);
     }

@@ -28,7 +28,7 @@ each with a potential maximum length of 15 characters.
 This mode also extends on the hard difficulty by adding reverse diagonals.
 
 #### Todo
-- Document functions
+- ~~Document functions~~
 - ~~Diagonals~~
 - Finish Readme
 - Move Todos to issues
